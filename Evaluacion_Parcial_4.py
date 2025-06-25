@@ -10,6 +10,16 @@ compras_fortificados_concepcion: list = []
 stock_fortificados_puentealto: int = 1300
 compras_fortificados_puentealto: list = []
 
+stock_fortificados_valparaiso: int = 100
+compras_fortificados_valparaiso: list = []
+
+stock_fortificados_vinadelmar: int = 50
+entradas_fortificados_vinadelmar: dict = {
+    "Sun": "Sunset",
+    "Ni": "Night"
+}
+compras_fortificados_vinadelmar: list = []
+
 # Funciones auxiliares
 def has_uppercase(input_string: str) -> bool:
     return any(char.isupper() for char in input_string)
@@ -98,6 +108,65 @@ def fortificados_puentealto():
     except Exception as e:
         print("Error en Puente Alto:", e)
 
+def fortificados_valparaiso():
+    global stock_fortificados_valparaiso
+    try:
+        if stock_fortificados_valparaiso < 1:
+            print("No hay stock de entradas para esta locación")
+            return
+
+        comprador = input("Por favor, ingrese el nombre del comprador: ").strip()
+        if existe_comprador(compras_fortificados_valparaiso, comprador):
+            print("No puede volver a comprar la misma persona")
+            return
+
+        confirmar = input("El único tipo de entrada disponible es General. ¿Desea continuar? (s/n): ").strip().lower()
+        if confirmar != "s":
+            print("Abortando compra")
+            return
+        
+        compras_fortificados_valparaiso.append({comprador: "G"})
+        stock_fortificados_valparaiso -= 1
+
+        print("Entrada registrada exitosamente")
+        print("-- Compra en Valparaíso --")
+        print("Nombre del comprador:", comprador)
+        print("Tipo de entrada: G (General)")
+
+    except Exception as e:
+        print("Error en Valparaíso:", e)
+
+def fortificados_vinadelmar():
+    global stock_fortificados_vinadelmar
+    try:
+        if stock_fortificados_vinadelmar < 1:
+            print("No hay stock de entradas para esta locación")
+            return
+
+        comprador = input("Por favor, ingrese el nombre del comprador: ").strip()
+        if existe_comprador(compras_fortificados_vinadelmar, comprador):
+            print("No puede volver a comprar la misma persona")
+            return
+
+        tipo = input("Ingrese el código de tipo de entrada a comprar (Sun/Ni): ").strip()
+        if tipo not in entradas_fortificados_vinadelmar:
+            print("Tipo de entrada inválido")
+            return
+        if stock_fortificados_vinadelmar < 1:
+            print("No hay stock suficiente")
+            return
+
+        compras_fortificados_vinadelmar.append({comprador: tipo})
+        stock_fortificados_vinadelmar -= 1
+
+        print("Entrada registrada exitosamente")
+        print("-- Compra en Viña del Mar --")
+        print("Nombre del comprador:", comprador)
+        print(f"Tipo de entrada: {tipo} ({entradas_fortificados_vinadelmar[tipo]})")
+
+    except Exception as e:
+        print("Error en Viña del Mar:", e)
+
 # Menú principal
 def menu():
     while True:
@@ -105,7 +174,9 @@ def menu():
             print("\nTOTEM AUTOSERVICIO GIRA ROCK AND CHILE IN CHILE")
             print("1. Comprar entrada a Los Fortificados en Concepción.")
             print("2. Comprar entrada a Los Fortificados en Puente Alto.")
-            print("3. Salir.")
+            print("3. Comprar entrada a Los Fortificados en Muelle Barón en Valparaíso.")
+            print("4. Comprar entrada a Los Fortificados en Muelle Vergara en Viña del Mar.")
+            print("5. Salir.")
             opcion = input("Seleccione una opción: ").strip()
 
             if opcion == "1":
@@ -113,6 +184,10 @@ def menu():
             elif opcion == "2":
                 fortificados_puentealto()
             elif opcion == "3":
+                fortificados_valparaiso()
+            elif opcion == "4":
+                fortificados_vinadelmar()
+            elif opcion == "5":
                 print("Saliendo del programa.")
                 break
             else:
